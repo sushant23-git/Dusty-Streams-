@@ -22,8 +22,8 @@ const CONFIG = {
     ],
     TMDB_BASE_URL: 'https://api.themoviedb.org/3',
     TMDB_IMAGE_BASE: 'https://image.tmdb.org/t/p',
-    VIDKING_BASE_URL: 'https://www.vidking.net/embed',
-    ACCENT_COLOR: 'e50914',
+    // Using vidsrc.xyz - cleaner player with minimal/no ads
+    EMBED_BASE_URL: 'https://vidsrc.xyz/embed',
     USE_MOCK_DATA: false // Set to true to use mock data only
 };
 
@@ -358,7 +358,7 @@ async function openVideoModal(item) {
         elements.episodeSelector.classList.add('hidden');
 
         // Set video source
-        const videoUrl = `${CONFIG.VIDKING_BASE_URL}/movie/${item.id}?color=${CONFIG.ACCENT_COLOR}`;
+        const videoUrl = `${CONFIG.EMBED_BASE_URL}/movie/${item.id}`;
         elements.videoFrame.src = videoUrl;
     } else {
         // Show episode selector for TV shows
@@ -403,11 +403,11 @@ function updateVideoSource() {
     const isMovie = currentItem.media_type === 'movie' || currentItem.title;
 
     if (isMovie) {
-        elements.videoFrame.src = `${CONFIG.VIDKING_BASE_URL}/movie/${currentItem.id}?color=${CONFIG.ACCENT_COLOR}`;
+        elements.videoFrame.src = `${CONFIG.EMBED_BASE_URL}/movie/${currentItem.id}`;
     } else {
         const season = elements.seasonSelect.value;
         const episode = elements.episodeSelect.value;
-        elements.videoFrame.src = `${CONFIG.VIDKING_BASE_URL}/tv/${currentItem.id}/${season}/${episode}?color=${CONFIG.ACCENT_COLOR}`;
+        elements.videoFrame.src = `${CONFIG.EMBED_BASE_URL}/tv/${currentItem.id}/${season}-${episode}`;
     }
 }
 

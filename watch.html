@@ -445,7 +445,7 @@
                 <div class="footer-column">
                     <h4>Powered By</h4>
                     <p class="powered-by">The Movie Database (TMDb)</p>
-                    <p class="powered-by">VidKing Player</p>
+                    <p class="powered-by">VidSrc Player</p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -481,8 +481,8 @@
             ],
             TMDB_BASE_URL: 'https://api.themoviedb.org/3',
             TMDB_IMAGE_BASE: 'https://image.tmdb.org/t/p',
-            VIDKING_BASE_URL: 'https://www.vidking.net/embed',
-            ACCENT_COLOR: 'e50914',
+            // Using vidsrc.xyz - cleaner player with minimal/no ads
+            EMBED_BASE_URL: 'https://vidsrc.xyz/embed',
             USE_MOCK_DATA: false
         };
 
@@ -601,11 +601,11 @@
             const isMovie = currentItem.media_type === 'movie' || currentItem.title;
 
             if (isMovie) {
-                elements.videoFrame.src = `${CONFIG.VIDKING_BASE_URL}/movie/${currentItem.id}?color=${CONFIG.ACCENT_COLOR}`;
+                elements.videoFrame.src = `${CONFIG.EMBED_BASE_URL}/movie/${currentItem.id}`;
             } else {
                 currentSeason = season;
                 currentEpisode = episode;
-                elements.videoFrame.src = `${CONFIG.VIDKING_BASE_URL}/tv/${currentItem.id}/${season}/${episode}?color=${CONFIG.ACCENT_COLOR}`;
+                elements.videoFrame.src = `${CONFIG.EMBED_BASE_URL}/tv/${currentItem.id}/${season}-${episode}`;
 
                 // Update URL without reloading
                 const newUrl = `watch.html?id=${currentItem.id}&type=tv&s=${season}&e=${episode}`;

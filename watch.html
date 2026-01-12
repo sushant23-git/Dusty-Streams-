@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch - Dusty Streams</title>
+    <meta name="description" content="Stream your favorite movies and TV shows in HD quality.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        /* Watch Page Specific Styles */
+        .watch-page {
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        .watch-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 20px;
+            background: var(--bg-glass);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-btn:hover {
+            background: var(--bg-glass-hover);
+            transform: translateX(-5px);
+        }
+
+        .watch-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .watch-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-wrapper {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-player {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+
+        .video-player iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            padding: 24px;
+        }
+
+        .watch-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .watch-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .watch-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .watch-year,
+        .watch-type {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .watch-type {
+            background: var(--bg-glass);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .watch-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        /* Episode Selector Panel */
+        .episode-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .selector-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .selector-wrapper {
+            flex: 1;
+        }
+
+        .selector-wrapper label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .watch-selector {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .watch-selector:hover {
+            border-color: var(--primary);
+        }
+
+        .watch-selector:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+        }
+
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .episodes-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .episodes-grid::-webkit-scrollbar-track {
+            background: var(--bg-glass);
+            border-radius: 3px;
+        }
+
+        .episodes-grid::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .episode-btn {
+            padding: 12px;
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .episode-btn:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .episode-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Movie info panel (when no episodes) */
+        .movie-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            height: fit-content;
+        }
+
+        .movie-poster {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .related-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .related-card {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .related-card:hover {
+            transform: scale(1.05);
+        }
+
+        .related-card img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading state */
+        .loading-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header scrolled">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Dusty Streams" class="logo-img">
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#moviesSection" class="nav-link">Movies</a>
+                <a href="index.html#tvSection" class="nav-link">TV Shows</a>
+            </nav>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search movies & shows..." id="searchInput">
+                <button class="search-btn" id="searchBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-content">
+            <div class="mobile-search">
+                <input type="text" class="search-input" placeholder="Search..." id="mobileSearchInput">
+            </div>
+            <nav class="mobile-nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#moviesSection" class="nav-link">Movies</a>
+                <a href="index.html#tvSection" class="nav-link">TV Shows</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Watch Page Content -->
+    <main class="watch-page">
+        <div class="watch-container">
+            <a href="index.html" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                Back to Browse
+            </a>
+
+            <div class="watch-content">
+                <div class="video-wrapper">
+                    <div class="video-player">
+                        <iframe id="videoFrame" src="" allowfullscreen
+                            allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h1 class="watch-title" id="watchTitle">Loading...</h1>
+                        <div class="watch-meta">
+                            <span class="watch-rating" id="watchRating">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <polygon
+                                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26">
+                                    </polygon>
+                                </svg>
+                                <span id="ratingValue">--</span>
+                            </span>
+                            <span class="watch-year" id="watchYear">----</span>
+                            <span class="watch-type" id="watchType">Movie</span>
+                        </div>
+                        <p class="watch-description" id="watchDescription">Loading description...</p>
+                    </div>
+                </div>
+
+                <!-- Episode Panel for TV Shows -->
+                <aside class="episode-panel hidden" id="episodePanel">
+                    <h3 class="panel-title">Episodes</h3>
+                    <div class="selector-row">
+                        <div class="selector-wrapper">
+                            <label for="seasonSelect">Season</label>
+                            <select id="seasonSelect" class="watch-selector"></select>
+                        </div>
+                    </div>
+                    <div class="episodes-grid" id="episodesGrid">
+                        <!-- Episode buttons will be loaded here -->
+                    </div>
+                </aside>
+
+                <!-- Side Panel for Movies -->
+                <aside class="movie-panel hidden" id="moviePanel">
+                    <img src="" alt="Poster" class="movie-poster" id="moviePoster">
+                    <h3 class="related-title">You Might Also Like</h3>
+                    <div class="related-grid" id="relatedGrid">
+                        <!-- Related content will be loaded here -->
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <img src="logo.png" alt="Dusty Streams" class="logo-img-lg">
+                    </a>
+                    <p class="footer-tagline">Dusty Streams is your ultimate destination for movies and TV shows. Stream
+                        your favorites in HD quality with no ads.</p>
+                </div>
+
+                <!-- Social Links -->
+                <div class="footer-column footer-social">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/sushant23-git" target="_blank" rel="noopener noreferrer"
+                            class="social-link" title="GitHub">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/sushant-gajbhiye-8a93b3246/" target="_blank"
+                            rel="noopener noreferrer" class="social-link" title="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.hackerrank.com/profile/sushantgajbhiye1" target="_blank"
+                            rel="noopener noreferrer" class="social-link" title="HackerRank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 0c1.285 0 9.75 4.886 10.392 6 .645 1.115.645 10.885 0 12S13.287 24 12 24s-9.75-4.885-10.395-6c-.641-1.115-.641-10.885 0-12C2.25 4.886 10.715 0 12 0zm2.295 6.799c-.141 0-.258.115-.258.258v3.875H9.963V6.908h.701c.141 0 .254-.115.254-.258 0-.094-.049-.176-.123-.221L9.223 4.959c-.055-.035-.122-.057-.193-.057-.054 0-.104.012-.148.037L7.31 6.429c-.072.045-.12.126-.12.218 0 .143.113.258.255.258h.566v9.89h-.566c-.142 0-.258.116-.258.26 0 .092.048.174.12.219l1.572 1.471c.044.025.094.037.148.037.071 0 .138-.022.193-.057l1.572-1.471c.074-.045.123-.127.123-.221 0-.143-.113-.258-.254-.258h-.701v-3.875h4.074v3.876h-.701c-.141 0-.254.115-.254.258 0 .094.049.176.123.221l1.572 1.471c.055.035.122.057.193.057.054 0 .104-.012.148-.037l1.572-1.471c.072-.045.12-.127.12-.219 0-.144-.113-.26-.255-.26h-.566v-9.89h.566c.142 0 .258-.115.258-.258 0-.092-.048-.173-.12-.218l-1.572-1.47c-.044-.025-.094-.037-.148-.037-.071 0-.138.022-.193.057l-1.572 1.47c-.074.045-.123.127-.123.221 0 .143.113.258.254.258h.701v3.875z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/sushaannnnttttttt/" target="_blank" rel="noopener noreferrer"
+                            class="social-link" title="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Powered By -->
+                <div class="footer-column">
+                    <h4>Powered By</h4>
+                    <p class="powered-by">The Movie Database (TMDb)</p>
+                    <p class="powered-by">VidKing Player</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Dusty Streams. All rights reserved to Sushant Gajbhiye.</p>
+                <p class="disclaimer">This site does not store any files on its server. All contents are provided by
+                    non-affiliated third parties.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== Configuration =====
+        const CONFIG = {
+            // TMDB API Keys Pool
+            TMDB_API_KEYS: [
+                'fb7bb23f03b6994dafc674c074d01761',
+                'e55425032d3d0f371fc776f302e7c09b',
+                '8301a21598f8b45668d5711a814f01f6',
+                '8cf43ad9c085135b9479ad5cf6bbcbda',
+                'da63548086e399ffc910fbc08526df05',
+                '13e53ff644a8bd4ba37b3e1044ad24f3',
+                '269890f657dddf4635473cf4cf456576',
+                'a2f888b27315e62e471b2d587048f32e',
+                '8476a7ab80ad76f0936744df0430e67c',
+                '5622cafbfe8f8cfe358a29c53e19bba0',
+                'ae4bd1b6fce2a5648671bfc171d15ba4',
+                '257654f35e3dff105574f97fb4b97035',
+                '2f4038e83265214a0dcd6ec2eb3276f5',
+                '9e43f45f94705cc8e1d5a0400d19a7b7',
+                'af6887753365e14160254ac7f4345dd2',
+                '06f10fc8741a672af455421c239a1ffc',
+                '09ad8ace66eec34302943272db0e8d2c'
+            ],
+            TMDB_BASE_URL: 'https://api.themoviedb.org/3',
+            TMDB_IMAGE_BASE: 'https://image.tmdb.org/t/p',
+            VIDKING_BASE_URL: 'https://www.vidking.net/embed',
+            ACCENT_COLOR: 'e50914',
+            USE_MOCK_DATA: false
+        };
+
+        // Get a random TMDB API key
+        function getTMDBApiKey() {
+            return CONFIG.TMDB_API_KEYS[Math.floor(Math.random() * CONFIG.TMDB_API_KEYS.length)];
+        }
+
+        // ===== Mock Data =====
+        const MOCK_DATA = {
+            trending: [
+                { id: 693134, title: "Dune: Part Two", overview: "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.", poster_path: "/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg", backdrop_path: "/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg", vote_average: 8.3, release_date: "2024-02-27", media_type: "movie" },
+                { id: 1022789, title: "Inside Out 2", overview: "Teenager Riley's mind headquarters is undergoing a sudden demolition to make room for something entirely unexpected: new Emotions!", poster_path: "/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", backdrop_path: "/p5ozvmdgsmbWe0H8Xk7Rc8IXXQE.jpg", vote_average: 7.6, release_date: "2024-06-11", media_type: "movie" },
+                { id: 94997, name: "House of the Dragon", overview: "The Targaryen dynasty is at the absolute apex of its power, with more than 15 dragons under their yoke.", poster_path: "/7QMsOTMUSwAV0L9puvmJLRUyDMy.jpg", backdrop_path: "/9mWnX1zz8zHj6LjbYBYTJPZl2Wk.jpg", vote_average: 8.4, first_air_date: "2022-08-21", media_type: "tv" },
+                { id: 124364, name: "Fallout", overview: "200 years after the apocalypse, the gentle denizens of luxury fallout shelters are forced to return to the irradiated hellscape their ancestors left behind.", poster_path: "/98G7e0FsS9gcBuxnTFMBqPHzGwH.jpg", backdrop_path: "/rqbCbjB19amtOtFQbb3K2lgm2Lc.jpg", vote_average: 8.5, first_air_date: "2024-04-10", media_type: "tv" },
+                { id: 653346, title: "Kingdom of the Planet of the Apes", overview: "Several generations in the future following Caesar's reign, apes are now the dominant species.", poster_path: "/gKkl37BQuKTanygYQG1pyYgLVgf.jpg", vote_average: 7.1, release_date: "2024-05-08", media_type: "movie" },
+                { id: 533535, title: "Deadpool & Wolverine", overview: "A listless Wade Wilson toils away in civilian life with his days as the morally flexible mercenary, Deadpool, behind him.", poster_path: "/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", vote_average: 7.7, release_date: "2024-07-24", media_type: "movie" }
+            ],
+            movies: [
+                { id: 693134, title: "Dune: Part Two", overview: "Follow the mythic journey of Paul Atreides.", poster_path: "/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg", vote_average: 8.3, release_date: "2024-02-27", media_type: "movie" },
+                { id: 1022789, title: "Inside Out 2", overview: "Teenager Riley's mind headquarters is undergoing changes.", poster_path: "/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", vote_average: 7.6, release_date: "2024-06-11", media_type: "movie" },
+                { id: 653346, title: "Kingdom of the Planet of the Apes", overview: "Apes are now the dominant species.", poster_path: "/gKkl37BQuKTanygYQG1pyYgLVgf.jpg", vote_average: 7.1, release_date: "2024-05-08", media_type: "movie" },
+                { id: 533535, title: "Deadpool & Wolverine", overview: "Wade Wilson returns as Deadpool.", poster_path: "/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", vote_average: 7.7, release_date: "2024-07-24", media_type: "movie" }
+            ],
+            tvShows: [
+                { id: 94997, name: "House of the Dragon", overview: "The Targaryen dynasty at its peak.", poster_path: "/7QMsOTMUSwAV0L9puvmJLRUyDMy.jpg", vote_average: 8.4, first_air_date: "2022-08-21", media_type: "tv" },
+                { id: 124364, name: "Fallout", overview: "Post-apocalyptic survival story.", poster_path: "/98G7e0FsS9gcBuxnTFMBqPHzGwH.jpg", vote_average: 8.5, first_air_date: "2024-04-10", media_type: "tv" },
+                { id: 1399, name: "Game of Thrones", overview: "Noble families fight for Westeros.", poster_path: "/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg", vote_average: 8.4, first_air_date: "2011-04-17", media_type: "tv" },
+                { id: 1396, name: "Breaking Bad", overview: "A chemistry teacher turns to crime.", poster_path: "/3xnWaLQjelJDDF7LT1WBo6f4BRe.jpg", vote_average: 8.9, first_air_date: "2008-01-20", media_type: "tv" }
+            ],
+            mockTvDetails: {
+                94997: { seasons: [{ season_number: 1, episode_count: 10 }, { season_number: 2, episode_count: 8 }] },
+                124364: { seasons: [{ season_number: 1, episode_count: 8 }] },
+                1399: { seasons: [{ season_number: 1, episode_count: 10 }, { season_number: 2, episode_count: 10 }, { season_number: 3, episode_count: 10 }, { season_number: 4, episode_count: 10 }, { season_number: 5, episode_count: 10 }, { season_number: 6, episode_count: 10 }, { season_number: 7, episode_count: 7 }, { season_number: 8, episode_count: 6 }] },
+                1396: { seasons: [{ season_number: 1, episode_count: 7 }, { season_number: 2, episode_count: 13 }, { season_number: 3, episode_count: 13 }, { season_number: 4, episode_count: 13 }, { season_number: 5, episode_count: 16 }] }
+            }
+        };
+
+        // ===== State =====
+        let currentItem = null;
+        let tvShowDetails = null;
+        let currentSeason = 1;
+        let currentEpisode = 1;
+
+        // ===== DOM Elements =====
+        const elements = {
+            videoFrame: document.getElementById('videoFrame'),
+            watchTitle: document.getElementById('watchTitle'),
+            ratingValue: document.getElementById('ratingValue'),
+            watchYear: document.getElementById('watchYear'),
+            watchType: document.getElementById('watchType'),
+            watchDescription: document.getElementById('watchDescription'),
+            episodePanel: document.getElementById('episodePanel'),
+            moviePanel: document.getElementById('moviePanel'),
+            seasonSelect: document.getElementById('seasonSelect'),
+            episodesGrid: document.getElementById('episodesGrid'),
+            moviePoster: document.getElementById('moviePoster'),
+            relatedGrid: document.getElementById('relatedGrid'),
+            searchInput: document.getElementById('searchInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+            mobileNav: document.getElementById('mobileNav')
+        };
+
+        // ===== API Functions =====
+        async function fetchFromTMDB(endpoint, params = {}) {
+            if (CONFIG.USE_MOCK_DATA) {
+                return null;
+            }
+
+            const url = new URL(`${CONFIG.TMDB_BASE_URL}${endpoint}`);
+            url.searchParams.append('api_key', getTMDBApiKey());
+
+            Object.entries(params).forEach(([key, value]) => {
+                url.searchParams.append(key, value);
+            });
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('API request failed');
+                return await response.json();
+            } catch (error) {
+                console.error('TMDB API Error:', error);
+                return null;
+            }
+        }
+
+        async function getTVShowDetails(tvId) {
+            const apiData = await fetchFromTMDB(`/tv/${tvId}`);
+            if (apiData) return apiData;
+            return MOCK_DATA.mockTvDetails[tvId] || { seasons: [{ season_number: 1, episode_count: 10 }] };
+        }
+
+        // ===== Get URL Parameters =====
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                id: params.get('id'),
+                type: params.get('type'),
+                season: parseInt(params.get('s')) || 1,
+                episode: parseInt(params.get('e')) || 1
+            };
+        }
+
+        // ===== Find Item in Mock Data =====
+        function findItemById(id, type) {
+            const numId = parseInt(id);
+            const allContent = [...MOCK_DATA.trending, ...MOCK_DATA.movies, ...MOCK_DATA.tvShows];
+            return allContent.find(item => item.id === numId);
+        }
+
+        // ===== Update Video Source =====
+        function updateVideoSource(season = currentSeason, episode = currentEpisode) {
+            if (!currentItem) return;
+
+            const isMovie = currentItem.media_type === 'movie' || currentItem.title;
+
+            if (isMovie) {
+                elements.videoFrame.src = `${CONFIG.VIDKING_BASE_URL}/movie/${currentItem.id}?color=${CONFIG.ACCENT_COLOR}`;
+            } else {
+                currentSeason = season;
+                currentEpisode = episode;
+                elements.videoFrame.src = `${CONFIG.VIDKING_BASE_URL}/tv/${currentItem.id}/${season}/${episode}?color=${CONFIG.ACCENT_COLOR}`;
+
+                // Update URL without reloading
+                const newUrl = `watch.html?id=${currentItem.id}&type=tv&s=${season}&e=${episode}`;
+                window.history.replaceState({}, '', newUrl);
+
+                // Update active episode button
+                updateActiveEpisode(episode);
+            }
+        }
+
+        // ===== Update Active Episode =====
+        function updateActiveEpisode(episode) {
+            document.querySelectorAll('.episode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.dataset.episode) === episode) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // ===== Render Episodes Grid =====
+        function renderEpisodesGrid(episodeCount) {
+            elements.episodesGrid.innerHTML = '';
+            for (let i = 1; i <= episodeCount; i++) {
+                const btn = document.createElement('button');
+                btn.className = `episode-btn ${i === currentEpisode ? 'active' : ''}`;
+                btn.dataset.episode = i;
+                btn.textContent = i;
+                btn.addEventListener('click', () => {
+                    updateVideoSource(currentSeason, i);
+                });
+                elements.episodesGrid.appendChild(btn);
+            }
+        }
+
+        // ===== Render Related Content =====
+        function renderRelatedContent(type) {
+            const items = type === 'movie' ? MOCK_DATA.movies : MOCK_DATA.tvShows;
+            const filtered = items.filter(item => item.id !== currentItem.id).slice(0, 4);
+
+            elements.relatedGrid.innerHTML = '';
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'related-card';
+                const posterUrl = item.poster_path
+                    ? `${CONFIG.TMDB_IMAGE_BASE}/w185${item.poster_path}`
+                    : 'https://via.placeholder.com/185x278/1a1a1a/666?text=No+Image';
+                card.innerHTML = `<img src="${posterUrl}" alt="${item.title || item.name}">`;
+                card.addEventListener('click', () => {
+                    const itemType = item.media_type || (item.title ? 'movie' : 'tv');
+                    window.location.href = `watch.html?id=${item.id}&type=${itemType}`;
+                });
+                elements.relatedGrid.appendChild(card);
+            });
+        }
+
+        // ===== Initialize Watch Page =====
+        async function initWatchPage() {
+            const params = getUrlParams();
+
+            if (!params.id) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            currentItem = findItemById(params.id, params.type);
+
+            if (!currentItem) {
+                // Try to load from localStorage (passed from main page)
+                const storedItem = localStorage.getItem('currentWatchItem');
+                if (storedItem) {
+                    currentItem = JSON.parse(storedItem);
+                } else {
+                    window.location.href = 'index.html';
+                    return;
+                }
+            }
+
+            const isMovie = currentItem.media_type === 'movie' || currentItem.title;
+            const title = isMovie ? currentItem.title : currentItem.name;
+            const releaseDate = isMovie ? currentItem.release_date : currentItem.first_air_date;
+            const year = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
+            const rating = currentItem.vote_average ? currentItem.vote_average.toFixed(1) : 'N/A';
+
+            // Update page info
+            document.title = `${title} - Dusty Streams`;
+            elements.watchTitle.textContent = title;
+            elements.ratingValue.textContent = rating;
+            elements.watchYear.textContent = year;
+            elements.watchType.textContent = isMovie ? 'Movie' : 'TV Show';
+            elements.watchDescription.textContent = currentItem.overview || 'No description available.';
+
+            if (isMovie) {
+                // Show movie panel
+                elements.moviePanel.classList.remove('hidden');
+                elements.episodePanel.classList.add('hidden');
+
+                // Set poster
+                const posterUrl = currentItem.poster_path
+                    ? `${CONFIG.TMDB_IMAGE_BASE}/w342${currentItem.poster_path}`
+                    : 'https://via.placeholder.com/342x513/1a1a1a/666?text=No+Image';
+                elements.moviePoster.src = posterUrl;
+
+                // Render related content
+                renderRelatedContent('movie');
+
+                // Load video
+                updateVideoSource();
+            } else {
+                // Show episode panel
+                elements.episodePanel.classList.remove('hidden');
+                elements.moviePanel.classList.add('hidden');
+
+                // Get TV show details
+                tvShowDetails = await getTVShowDetails(currentItem.id);
+
+                if (tvShowDetails && tvShowDetails.seasons) {
+                    const seasons = tvShowDetails.seasons.filter(s => s.season_number > 0);
+
+                    // Populate seasons
+                    elements.seasonSelect.innerHTML = seasons.map(season =>
+                        `<option value="${season.season_number}" ${season.season_number === params.season ? 'selected' : ''}>Season ${season.season_number}</option>`
+                    ).join('');
+
+                    // Set current season and episode
+                    currentSeason = params.season;
+                    currentEpisode = params.episode;
+
+                    // Render episodes for current season
+                    const currentSeasonData = seasons.find(s => s.season_number === currentSeason);
+                    if (currentSeasonData) {
+                        renderEpisodesGrid(currentSeasonData.episode_count);
+                    }
+
+                    // Season change handler
+                    elements.seasonSelect.addEventListener('change', () => {
+                        currentSeason = parseInt(elements.seasonSelect.value);
+                        currentEpisode = 1;
+                        const seasonData = seasons.find(s => s.season_number === currentSeason);
+                        if (seasonData) {
+                            renderEpisodesGrid(seasonData.episode_count);
+                        }
+                        updateVideoSource(currentSeason, 1);
+                    });
+
+                    // Load video
+                    updateVideoSource(currentSeason, currentEpisode);
+                }
+            }
+        }
+
+        // ===== Event Listeners =====
+        function setupEventListeners() {
+            // Search redirect
+            elements.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    window.location.href = `index.html?search=${encodeURIComponent(e.target.value)}`;
+                }
+            });
+
+            elements.searchBtn.addEventListener('click', () => {
+                if (elements.searchInput.value.trim()) {
+                    window.location.href = `index.html?search=${encodeURIComponent(elements.searchInput.value)}`;
+                }
+            });
+
+            // Mobile menu
+            elements.mobileMenuBtn.addEventListener('click', () => {
+                elements.mobileMenuBtn.classList.toggle('active');
+                elements.mobileNav.classList.toggle('active');
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            initWatchPage();
+        });
+    </script>
+</body>
+
+</html>

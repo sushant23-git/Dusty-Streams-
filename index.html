@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dusty Streams - Watch Movies & TV Shows</title>
+    <meta name="description"
+        content="Stream your favorite movies and TV shows in HD quality. Free streaming with no ads.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo.png">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <img src="logo.png" alt="Dusty Streams" class="logo-img">
+            </a>
+            <nav class="nav">
+                <a href="#" class="nav-link active" data-category="movie">Movies</a>
+                <a href="#" class="nav-link" data-category="tv">TV Shows</a>
+                <a href="#" class="nav-link" data-category="trending">Trending</a>
+            </nav>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search movies & shows..." id="searchInput">
+                <button class="search-btn" id="searchBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-content">
+            <div class="mobile-search">
+                <input type="text" class="search-input" placeholder="Search..." id="mobileSearchInput">
+            </div>
+            <nav class="mobile-nav-links">
+                <a href="#" class="nav-link active" data-category="movie">Movies</a>
+                <a href="#" class="nav-link" data-category="tv">TV Shows</a>
+                <a href="#" class="nav-link" data-category="trending">Trending</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-backdrop" id="heroBackdrop"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <div class="hero-info">
+                <span class="hero-badge" id="heroBadge">Featured</span>
+                <h1 class="hero-title" id="heroTitle">Loading...</h1>
+                <p class="hero-description" id="heroDescription">Discover amazing content on Dusty Streams</p>
+                <div class="hero-meta">
+                    <span class="hero-rating" id="heroRating">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <polygon
+                                points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26">
+                            </polygon>
+                        </svg>
+                        <span id="heroRatingValue">--</span>
+                    </span>
+                    <span class="hero-year" id="heroYear">----</span>
+                </div>
+                <button class="btn btn-primary" id="heroPlayBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <polygon points="5,3 19,12 5,21"></polygon>
+                    </svg>
+                    Watch Now
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Trending Section -->
+            <section class="content-section" id="trendingSection">
+                <div class="section-header">
+                    <h2 class="section-title">🔥 Trending Now</h2>
+                    <div class="section-tabs">
+                        <button class="tab-btn active" data-type="all">All</button>
+                        <button class="tab-btn" data-type="movie">Movies</button>
+                        <button class="tab-btn" data-type="tv">TV Shows</button>
+                    </div>
+                </div>
+                <div class="content-grid" id="trendingGrid">
+                    <!-- Content cards will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Popular Movies -->
+            <section class="content-section" id="moviesSection">
+                <div class="section-header">
+                    <h2 class="section-title">🎬 Popular Movies</h2>
+                </div>
+                <div class="content-grid" id="moviesGrid">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Popular TV Shows -->
+            <section class="content-section" id="tvSection">
+                <div class="section-header">
+                    <h2 class="section-title">📺 Popular TV Shows</h2>
+                </div>
+                <div class="content-grid" id="tvGrid">
+                    <!-- TV Shows will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Search Results -->
+            <section class="content-section hidden" id="searchSection">
+                <div class="section-header">
+                    <h2 class="section-title">🔍 Search Results</h2>
+                </div>
+                <div class="content-grid" id="searchGrid">
+                    <!-- Search results will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div class="modal" id="videoModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Movie Title</h2>
+                <div class="modal-meta">
+                    <span class="modal-rating" id="modalRating">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <polygon
+                                points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26">
+                            </polygon>
+                        </svg>
+                        <span>--</span>
+                    </span>
+                    <span class="modal-year" id="modalYear">----</span>
+                </div>
+            </div>
+            <div class="modal-description" id="modalDescription"></div>
+
+            <!-- Season/Episode Selector for TV Shows -->
+            <div class="episode-selector hidden" id="episodeSelector">
+                <div class="selector-group">
+                    <label for="seasonSelect">Season:</label>
+                    <select id="seasonSelect" class="selector"></select>
+                </div>
+                <div class="selector-group">
+                    <label for="episodeSelect">Episode:</label>
+                    <select id="episodeSelect" class="selector"></select>
+                </div>
+            </div>
+
+            <div class="video-container">
+                <iframe id="videoFrame" src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"
+                    frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <img src="logo.png" alt="Dusty Streams" class="logo-img-lg">
+                    </a>
+                    <p class="footer-tagline">Dusty Streams is your ultimate destination for movies and TV shows. Stream
+                        your favorites in HD quality with no ads.</p>
+                </div>
+
+                <!-- Social Links -->
+                <div class="footer-column footer-social">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/sushant23-git" target="_blank" rel="noopener noreferrer"
+                            class="social-link" title="GitHub">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/sushant-gajbhiye-8a93b3246/" target="_blank"
+                            rel="noopener noreferrer" class="social-link" title="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.hackerrank.com/profile/sushantgajbhiye1" target="_blank"
+                            rel="noopener noreferrer" class="social-link" title="HackerRank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 0c1.285 0 9.75 4.886 10.392 6 .645 1.115.645 10.885 0 12S13.287 24 12 24s-9.75-4.885-10.395-6c-.641-1.115-.641-10.885 0-12C2.25 4.886 10.715 0 12 0zm2.295 6.799c-.141 0-.258.115-.258.258v3.875H9.963V6.908h.701c.141 0 .254-.115.254-.258 0-.094-.049-.176-.123-.221L9.223 4.959c-.055-.035-.122-.057-.193-.057-.054 0-.104.012-.148.037L7.31 6.429c-.072.045-.12.126-.12.218 0 .143.113.258.255.258h.566v9.89h-.566c-.142 0-.258.116-.258.26 0 .092.048.174.12.219l1.572 1.471c.044.025.094.037.148.037.071 0 .138-.022.193-.057l1.572-1.471c.074-.045.123-.127.123-.221 0-.143-.113-.258-.254-.258h-.701v-3.875h4.074v3.876h-.701c-.141 0-.254.115-.254.258 0 .094.049.176.123.221l1.572 1.471c.055.035.122.057.193.057.054 0 .104-.012.148-.037l1.572-1.471c.072-.045.12-.127.12-.219 0-.144-.113-.26-.255-.26h-.566v-9.89h.566c.142 0 .258-.115.258-.258 0-.092-.048-.173-.12-.218l-1.572-1.47c-.044-.025-.094-.037-.148-.037-.071 0-.138.022-.193.057l-1.572 1.47c-.074.045-.123.127-.123.221 0 .143.113.258.254.258h.701v3.875z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/sushaannnnttttttt/" target="_blank" rel="noopener noreferrer"
+                            class="social-link" title="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Powered By -->
+                <div class="footer-column">
+                    <h4>Powered By</h4>
+                    <p class="powered-by">The Movie Database (TMDb)</p>
+                    <p class="powered-by">VidKing Player</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Dusty Streams. All rights reserved to Sushant Gajbhiye.</p>
+                <p class="disclaimer">This site does not store any files on its server. All contents are provided by
+                    non-affiliated third parties.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
